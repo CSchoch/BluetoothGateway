@@ -52,7 +52,7 @@ BLEScan *pBLEScan;
 bool newData;
 int dataIndex;
 Data tempData;
-Data sensorData[8];
+Data sensorData[4];
 
 void setup_wifi()
 {
@@ -314,14 +314,6 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
     {
       dataIndex = 2;
     }
-    else if (advertisedDevice.getName() == "ATC_F4ADDB") // Bad
-    {
-      dataIndex = 3;
-    }
-    else if (advertisedDevice.getName() == "ATC_6FE1D5") // Eltern
-    {
-      dataIndex = 4;
-    }
     else
     {
       return;
@@ -499,10 +491,6 @@ void loop()
       i++;
       DEBUGPRINTFNONE("Heizraum Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
       i++;
-      DEBUGPRINTFNONE("Bad Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-      i++;
-      DEBUGPRINTFNONE("Eltern Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-      i++;
       DEBUGPRINTLNNONE("");
       newData = false;
     }
@@ -541,14 +529,6 @@ void loop()
 
         case 2:
           topic = "/HeatingRoom";
-          break;
-
-        case 3:
-          topic = "/Bath";
-          break;
-
-        case 4:
-          topic = "/Parents";
           break;
 
         default:
