@@ -450,8 +450,8 @@ void setup()
     BLEDevice::init("");
     pBLEScan = BLEDevice::getScan();
     pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks(), true);
-    pBLEScan->setInterval(625); // default 100
-    pBLEScan->setWindow(625);   // default 100, less or equal setInterval value
+    pBLEScan->setInterval(500); // default 100
+    pBLEScan->setWindow(100);   // default 100, less or equal setInterval value
     pBLEScan->setActiveScan(true);
     pBLEScan->start(scanTime, scanCompleteCB);
     DEBUGPRINTLNNONE("Now scanning in the background ... scanCompleteCB() will be called when done.");
