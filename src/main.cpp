@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #define LED_PIN 2
-#define DEBUGLEVEL DEBUG
+#define DEBUGLEVEL NONE
 #define MAX_PACKET_SIZE 256 // Max data packet size
 
 #define uS_TO_S_FACTOR 1000000 // Conversion factor for micro seconds to seconds
@@ -17,7 +17,7 @@
 #include <BLEScan.h>
 
 //#include "Config.h" // make your own config file or remove this line and use the following lines
-const char *clientId = "Temperatures";
+const char *clientId = "Temperatures/Corridor";
 const char *mqtt_server = "192.168.2.64";
 #include "WifiCredentials.h"       // const char* ssid = "MySSID"; const char* WifiPassword = "MyPw";
 IPAddress ip(192, 168, 2, 8);      // Static IP
@@ -314,6 +314,26 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
     {
       dataIndex = 2;
     }
+    else if (advertisedDevice.getName() == "ATC_350AB8") // Flur
+    {
+      dataIndex = 3;
+    }
+    else if (advertisedDevice.getName() == "ATC_F4ADDB") // Bad
+    {
+      dataIndex = 4;
+    }
+    else if (advertisedDevice.getName() == "ATC_6FE1D5") // Eltern
+    {
+      dataIndex = 5;
+    }
+    else if (advertisedDevice.getName() == "ATC_67B4CC") // Kind
+    {
+      dataIndex = 6;
+    }
+    else if (advertisedDevice.getName() == "ATC_D24D9F") // Dach
+    {
+      dataIndex = 7;
+    }
     else
     {
       return;
@@ -491,6 +511,16 @@ void loop()
       i++;
       DEBUGPRINTFNONE("Heizraum Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
       i++;
+      DEBUGPRINTFNONE("Flur Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+      i++;
+      DEBUGPRINTFNONE("Bad Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+      i++;
+      DEBUGPRINTFNONE("Eltern Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+      i++;
+      DEBUGPRINTFNONE("Katja Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+      i++;
+      DEBUGPRINTFNONE("Dachboden Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+      i++;
       DEBUGPRINTLNNONE("");
       newData = false;
     }
@@ -529,6 +559,26 @@ void loop()
 
         case 2:
           topic = "/HeatingRoom";
+          break;
+
+        case 3:
+          topic = "/Corridor";
+          break;
+
+        case 4:
+          topic = "/Bath";
+          break;
+
+        case 5:
+          topic = "/Parents";
+          break;
+
+        case 6:
+          topic = "/Child";
+          break;
+
+        case 7:
+          topic = "/Atic";
           break;
 
         default:
