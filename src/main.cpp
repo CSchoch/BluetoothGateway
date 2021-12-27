@@ -489,7 +489,7 @@ void setup()
   DEBUGPRINTLNNONE(bootCount);
 
   if (!enableUpdate)
-  {  
+  {
     sensorData[0].Name = "ATC_50B64A";
     sensorData[0].Topic = "Basement";
     sensorData[1].Name = "ATC_AB94CF";
@@ -543,25 +543,35 @@ void loop()
     }
     mqttClient.loop();
 
+    // if (newData)
+    // {
+    //   uint8_t i = 0;
+    //   DEBUGPRINTFNONE("Keller: Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+    //   i++;
+    //   DEBUGPRINTFNONE("Wohnzimmer Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+    //   i++;
+    //   DEBUGPRINTFNONE("Heizraum Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+    //   i++;
+    //   DEBUGPRINTFNONE("Flur Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+    //   i++;
+    //   DEBUGPRINTFNONE("Bad Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+    //   i++;
+    //   DEBUGPRINTFNONE("Eltern Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+    //   i++;
+    //   DEBUGPRINTFNONE("Katja Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+    //   i++;
+    //   DEBUGPRINTFNONE("Dachboden Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+    //   i++;
+    //   DEBUGPRINTLNNONE("");
+    //   newData = false;
+    // }
+
     if (newData)
     {
-      uint8_t i = 0;
-      DEBUGPRINTFNONE("Keller: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-      i++;
-      DEBUGPRINTFNONE("Wohnzimmer Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-      i++;
-      DEBUGPRINTFNONE("Heizraum Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-      i++;
-      DEBUGPRINTFNONE("Flur Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-      i++;
-      DEBUGPRINTFNONE("Bad Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-      i++;
-      DEBUGPRINTFNONE("Eltern Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-      i++;
-      DEBUGPRINTFNONE("Katja Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-      i++;
-      DEBUGPRINTFNONE("Dachboden Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-      i++;
+      for (size_t i = 0; i < sizeof(sensorData) / sizeof(sensorData[0]); i++)
+      {
+        DEBUGPRINTFNONE("%s: Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Topic, sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+      }
       DEBUGPRINTLNNONE("");
       newData = false;
     }
