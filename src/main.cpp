@@ -1,4 +1,5 @@
 #include <Arduino.h>
+using namespace std;
 
 #define LED_PIN 2
 #define DEBUGLEVEL NONE
@@ -45,14 +46,16 @@ struct Data
   int Flag = -1;
   int Count = -1;
   int CountOld = -1;
+  int Rssi = -1;
+  string Name = "";
+  char *Topic = "";
 };
 
 int scanTime = 30; // seconds
 BLEScan *pBLEScan;
 bool newData;
-int dataIndex;
 Data tempData;
-Data sensorData[4];
+Data sensorData[8];
 
 void setup_wifi()
 {
@@ -289,6 +292,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
 
   void onResult(BLEAdvertisedDevice advertisedDevice)
   {
+    int dataIndex = -1;
     uint8_t mac[6];
     uint8_t *payload = advertisedDevice.getPayload();
 
@@ -302,42 +306,58 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
     uint16_t serviceType = *(uint16_t *)(serviceData + 2);
     DEBUGPRINTFDEBUG("Advertised Device: %s\r\n", advertisedDevice.toString().c_str());
     DEBUGPRINTFDEBUG("Found service '%04x' data len: %d, \r\n", serviceType, serviceDataLength);
-    if (advertisedDevice.getName() == "ATC_50B64A") // Keller
+    string devName = advertisedDevice.getName();
+    for (size_t i = 0; i < sizeof(sensorData) / sizeof(sensorData[0]); i++)
     {
-      dataIndex = 0;
+      if (devName == sensorData[i].Name)
+      {
+        dataIndex = i;
+        break;
+      }
     }
-    else if (advertisedDevice.getName() == "ATC_AB94CF") // Wohnzimmer
-    {
-      dataIndex = 1;
-    }
-    else if (advertisedDevice.getName() == "ATC_A0FF18") // Heizraum
-    {
-      dataIndex = 2;
-    }
-    else if (advertisedDevice.getName() == "ATC_350AB8") // Flur
-    {
-      dataIndex = 3;
-    }
-    else if (advertisedDevice.getName() == "ATC_F4ADDB") // Bad
-    {
-      dataIndex = 4;
-    }
-    else if (advertisedDevice.getName() == "ATC_6FE1D5") // Eltern
-    {
-      dataIndex = 5;
-    }
-    else if (advertisedDevice.getName() == "ATC_67B4CC") // Kind
-    {
-      dataIndex = 6;
-    }
-    else if (advertisedDevice.getName() == "ATC_D24D9F") // Dach
-    {
-      dataIndex = 7;
-    }
-    else
+    if (dataIndex == -1)
     {
       return;
     }
+
+    // if (advertisedDevice.getName() == "ATC_50B64A") // Keller
+    // {
+    //   dataIndex = 0;
+    // }
+    // else if (advertisedDevice.getName() == "ATC_AB94CF") // Wohnzimmer
+    // {
+    //   dataIndex = 1;
+    // }
+    // else if (advertisedDevice.getName() == "ATC_A0FF18") // Heizraum
+    // {
+    //   dataIndex = 2;
+    // }
+    // else if (advertisedDevice.getName() == "ATC_350AB8") // Flur
+    // {
+    //   dataIndex = 3;
+    // }
+    // else if (advertisedDevice.getName() == "ATC_F4ADDB") // Bad
+    // {
+    //   dataIndex = 4;
+    // }
+    // else if (advertisedDevice.getName() == "ATC_6FE1D5") // Eltern
+    // {
+    //   dataIndex = 5;
+    // }
+    // else if (advertisedDevice.getName() == "ATC_67B4CC") // Kind
+    // {
+    //   dataIndex = 6;
+    // }
+    // else if (advertisedDevice.getName() == "ATC_D24D9F") // Dach
+    // {
+    //   dataIndex = 7;
+    // }
+    // else
+    // {
+    //   return;
+    // }
+
+    tempData.Rssi = advertisedDevice.getRSSI();
 
     // printBuffer(serviceData, serviceDataLength);
     if (serviceType == 0xfe95)
@@ -441,6 +461,10 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
     {
       sensorData[dataIndex].Count = tempData.Count;
     }
+    if (tempData.Rssi != -1)
+    {
+      sensorData[dataIndex].Rssi = tempData.Rssi;
+    }
   }
 };
 
@@ -465,7 +489,24 @@ void setup()
   DEBUGPRINTLNNONE(bootCount);
 
   if (!enableUpdate)
-  {
+  {  
+    sensorData[0].Name = "ATC_50B64A";
+    sensorData[0].Topic = "Basement";
+    sensorData[1].Name = "ATC_AB94CF";
+    sensorData[1].Topic = "LivingRoom";
+    sensorData[2].Name = "ATC_A0FF18";
+    sensorData[2].Topic = "HeatingRoom";
+    sensorData[3].Name = "ATC_350AB8";
+    sensorData[3].Topic = "Corridor";
+    sensorData[4].Name = "ATC_F4ADDB";
+    sensorData[4].Topic = "Bath";
+    sensorData[5].Name = "ATC_6FE1D5";
+    sensorData[5].Topic = "Parents";
+    sensorData[6].Name = "ATC_67B4CC";
+    sensorData[6].Topic = "Child";
+    sensorData[7].Name = "ATC_D24D9F";
+    sensorData[7].Topic = "Atic";
+
     DEBUGPRINTLNNONE("Scanning...");
     BLEDevice::init("");
     pBLEScan = BLEDevice::getScan();
@@ -531,7 +572,7 @@ void loop()
       {
         sensorData[i].CountOld = sensorData[i].Count;
         lastUpdated = millis();
-        const size_t capacity = JSON_OBJECT_SIZE(5);
+        const size_t capacity = JSON_OBJECT_SIZE(6);
         DynamicJsonDocument doc(capacity);
 
         //JsonObject Room = doc.createNestedObject("LivingRoom");
@@ -540,6 +581,7 @@ void loop()
         doc["VBattery"] = sensorData[i].VBat;
         doc["Battery"] = sensorData[i].Bat;
         doc["Count"] = sensorData[i].Count;
+        doc["Lqi"] = 100 + sensorData[i].Rssi;
 
         DEBUGPRINTNONE("MemUsage.........: ");
         DEBUGPRINTLNNONE(doc.memoryUsage());
