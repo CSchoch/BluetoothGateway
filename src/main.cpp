@@ -48,7 +48,7 @@ struct Data
   int CountOld = -1;
   int Rssi = -1;
   string Name = "";
-  char *Topic = "";
+  string Topic = "";
 };
 
 int scanTime = 30; // seconds
@@ -320,43 +320,6 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
       return;
     }
 
-    // if (advertisedDevice.getName() == "ATC_50B64A") // Keller
-    // {
-    //   dataIndex = 0;
-    // }
-    // else if (advertisedDevice.getName() == "ATC_AB94CF") // Wohnzimmer
-    // {
-    //   dataIndex = 1;
-    // }
-    // else if (advertisedDevice.getName() == "ATC_A0FF18") // Heizraum
-    // {
-    //   dataIndex = 2;
-    // }
-    // else if (advertisedDevice.getName() == "ATC_350AB8") // Flur
-    // {
-    //   dataIndex = 3;
-    // }
-    // else if (advertisedDevice.getName() == "ATC_F4ADDB") // Bad
-    // {
-    //   dataIndex = 4;
-    // }
-    // else if (advertisedDevice.getName() == "ATC_6FE1D5") // Eltern
-    // {
-    //   dataIndex = 5;
-    // }
-    // else if (advertisedDevice.getName() == "ATC_67B4CC") // Kind
-    // {
-    //   dataIndex = 6;
-    // }
-    // else if (advertisedDevice.getName() == "ATC_D24D9F") // Dach
-    // {
-    //   dataIndex = 7;
-    // }
-    // else
-    // {
-    //   return;
-    // }
-
     tempData.Rssi = advertisedDevice.getRSSI();
 
     // printBuffer(serviceData, serviceDataLength);
@@ -543,34 +506,11 @@ void loop()
     }
     mqttClient.loop();
 
-    // if (newData)
-    // {
-    //   uint8_t i = 0;
-    //   DEBUGPRINTFNONE("Keller: Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-    //   i++;
-    //   DEBUGPRINTFNONE("Wohnzimmer Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-    //   i++;
-    //   DEBUGPRINTFNONE("Heizraum Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-    //   i++;
-    //   DEBUGPRINTFNONE("Flur Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-    //   i++;
-    //   DEBUGPRINTFNONE("Bad Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-    //   i++;
-    //   DEBUGPRINTFNONE("Eltern Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-    //   i++;
-    //   DEBUGPRINTFNONE("Katja Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-    //   i++;
-    //   DEBUGPRINTFNONE("Dachboden Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
-    //   i++;
-    //   DEBUGPRINTLNNONE("");
-    //   newData = false;
-    // }
-
     if (newData)
     {
       for (size_t i = 0; i < sizeof(sensorData) / sizeof(sensorData[0]); i++)
       {
-        DEBUGPRINTFNONE("%s: Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Topic, sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
+        DEBUGPRINTFNONE("%s: Temp: %.2f°C, Humidity: %.2f%%, Vbatt: %d, Battery: %d%%, flg: 0x%02x, count: %d\r\n", sensorData[i].Topic.c_str(), sensorData[i].Temp, sensorData[i].Humidity, sensorData[i].VBat, sensorData[i].Bat, sensorData[i].Flag, sensorData[i].Count);
       }
       DEBUGPRINTLNNONE("");
       newData = false;
@@ -593,53 +533,15 @@ void loop()
         doc["Count"] = sensorData[i].Count;
         doc["Lqi"] = 100 + sensorData[i].Rssi;
 
-        DEBUGPRINTNONE("MemUsage.........: ");
-        DEBUGPRINTLNNONE(doc.memoryUsage());
+        DEBUGPRINTFNONE("MemUsage.........: %d / %d\r\n", doc.memoryUsage(), capacity);
 
         serializeJson(doc, Data, sizeof(Data));
 
-        char *topic;
-        switch (i)
-        {
-        case 0:
-          topic = "/Basement";
-          break;
+        string topic = "/" + sensorData[i].Topic;
 
-        case 1:
-          topic = "/LivingRoom";
-          break;
-
-        case 2:
-          topic = "/HeatingRoom";
-          break;
-
-        case 3:
-          topic = "/Corridor";
-          break;
-
-        case 4:
-          topic = "/Bath";
-          break;
-
-        case 5:
-          topic = "/Parents";
-          break;
-
-        case 6:
-          topic = "/Child";
-          break;
-
-        case 7:
-          topic = "/Atic";
-          break;
-
-        default:
-          topic = "/Unknown";
-          break;
-        };
-        char *path = (char *)malloc(1 + strlen(clientId) + strlen(topic));
+        char *path = (char *)malloc(1 + strlen(clientId) + strlen(topic.c_str()));
         strcpy(path, clientId);
-        strcat(path, topic);
+        strcat(path, topic.c_str());
         if (!mqttClient.publish(path, Data, false))
         {
           lastUpdated = millis() - (TIME_TO_SLEEP * 1000);
